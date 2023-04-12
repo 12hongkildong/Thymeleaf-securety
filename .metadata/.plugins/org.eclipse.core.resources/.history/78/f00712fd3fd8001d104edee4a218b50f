@@ -1,0 +1,117 @@
+package kr.co.rland.web.controller.admin;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.servlet.http.HttpSession;
+import kr.co.rland.web.entity.Menu;
+import kr.co.rland.web.entity.MenuView;
+import kr.co.rland.web.entity.RcmdMenuView;
+import kr.co.rland.web.service.CategoryService;
+import kr.co.rland.web.service.MenuService;
+import kr.co.rland.web.service.RcmdMenuService;
+
+@Controller("adminMenuController")
+@RequestMapping("/admin/menu") //공통된 url을 정해준다
+public class MenuController {
+	
+	@Autowired
+	private MenuService service;
+	@Autowired
+	private CategoryService categoryService;
+	@Autowired
+	private RcmdMenuService rcmdMenuService;
+	
+	public MenuController() {
+
+	}
+	
+//	public MenuController(MenuRepository menuRepository) {
+//		this.menuRepository = menuRepository;
+//	}
+
+//	@Autowired menuRepository 메모리에 올라가있다고 했잖아요.
+//	public void setMenuRepository(MenuRepository menuRepository) {
+//		this.menuRepository = menuRepository
+//	}
+
+	@GetMapping("list")
+	public String list(
+			@RequestParam(name="p", defaultValue = "1") int page, 
+			@RequestParam(name="q", required = false) String query,
+			@RequestParam(name="c", required = false) Integer categoryId,
+//			@CookieValue("my") String myCookie
+			//@RequestHeader("Accept-Language") String language,
+			Model model,
+			HttpSession session) throws UnsupportedEncodingException {
+		
+//		Cookie[] cookie = request.getCookies();
+//		for(Cookie c : cookie)
+//			if(c.getName().equals("my")) {
+//				myCookie = c.getValue();
+//				break;
+//			}
+//		myCookie = URLDecoder.decode(myCookie,"utf-8");
+//		System.out.println(myCookie);
+//		System.out.println(language);
+		
+//		 로그인은 했나? -> 그럼 어드민은 맞나?
+//		 아니요 -> 로그인하고 와
+		
+		if(session.getAttribute("username")==null)
+			return "redirect:/user/login?returnURL=/admin/list";
+//		if(session.getAttribute("isAuth") == null)
+//			return"redirect:/user/login";
+//		if(너 로그이는 했니?)
+//		 네-> if(어드민인가?)
+//		 아니요 -> 권한이 없다.
+		
+		if(session.getAttribute("isAutdh")==null)
+			return "redirect:/user/login";
+		
+		List <MenuView> list = service.getViewList(page, categoryId, query);
+		model.addAttribute("list", list);
+		
+		return "/admin/menu/list";
+	}
+	@PostMapping("list")
+	public String post(@RequestParam(name="techs")String techs) {
+		System.out.println(techs);
+		System.out.println(techs.isEmpty());
+		return "/WEB-INF/view/admin/menu/reg.jsp";
+	}
+	
+	
+	@GetMapping("detail")
+	public String detail(Integer id,Model model) {
+		Menu menu = service.getById(id);
+		String categorName = categoryService.getCategoryNameById((int)menu.getCategoryId());
+		List <RcmdMenuView> rcmdList = rcmdMenuService.getViewList(id);
+		model.addAttribute("menu", menu);
+		model.addAttribute("rcmdList", rcmdList);
+		model.addAttribute("categoryName", categorName);
+		return "admin/menu/detail";
+	}
+	
+	// 등록폼을 주세요
+//	@RequestMapping(value="reg", method=RequestMethod.GET)
+	@GetMapping("reg")
+	public String reg() {
+		return "/WEB-INF/view/admin/menu/reg.jsp";
+	}
+	
+	// 폼 입력 제줄이요
+	@PostMapping("reg")
+	public String regList(@RequestBody Menu menu) {
+		return "redirect:list";
+	}
+}

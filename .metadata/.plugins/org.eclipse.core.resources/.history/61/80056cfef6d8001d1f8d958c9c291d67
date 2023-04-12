@@ -1,0 +1,24 @@
+package kr.co.rland.web.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class RlandSecurityConfig {
+	
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		
+		http
+			.authorizeHttpRequests()   //권한을 요청하는데
+			.requestMatchers("/admin/**").hasAnyRole("ADMIN","YOO","hong")  // 요청에 대한 꼬리를 단다. url패턴을 누구에게만 허락할 것인지에 대한
+			.requestMatchers("/member/**").hasAnyRole("ADMIN","MEMBER")
+			.anyRequest().permitAll();
+			
+		
+		
+		return http.build();
+	}
+}

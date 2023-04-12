@@ -1,0 +1,11 @@
+package kr.co.rland.web.service;
+
+public class DefaultMemberService implements MemberService {
+
+	@Override
+	public boolean isValidMember(String uid, String pwd) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+}

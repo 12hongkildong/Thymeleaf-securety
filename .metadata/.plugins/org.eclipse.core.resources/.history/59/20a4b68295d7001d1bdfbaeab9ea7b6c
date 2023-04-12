@@ -1,0 +1,13 @@
+package kr.co.rland.web.entity;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Member {
+	private Long id;
+	private String userName;
+	private String pwd;
+	private String email;
+	private Long roleId;
+}

@@ -1,0 +1,8 @@
+package kr.co.rland.web.service;
+
+public interface MemberService {
+
+	Member getByUserName(String uid);
+
+	boolean isValidMember(String uid, String pwd);
+}

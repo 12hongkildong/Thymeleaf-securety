@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.rland.web.repository.MenuRepository">
+	<!-- 아래의 리졀트맵의 id값을 활용해서 select문의 resultMap에 넣어주면 된다. -->
+	<resultMap id="menuResultMap" type="Menu">
+		<result property="regDate" column="reg_date" />
+		<result property="categoryId" column="category_id" />
+		<result property="regMemberId" column="reg_member_id" />
+	</resultMap>
+
+	<resultMap id="menuViewResultMap" type="MenuView">
+		<result property="regDate" column="reg_date" />
+		<result property="categoryId" column="category_id" />
+		<result property="categoryName" column="category_name" />
+		<result property="regMemberId" column="reg_member_id" />
+	</resultMap>
+
+	<select id="findAll" resultMap="menuResultMap"
+		parameterType="integer">
+		select *
+		from menu
+		<trim prefix="where" prefixOverrides="AND | OR">
+			<if test="query !=null">
+				name like '%${query}%'
+			</if>
+			<if test="price != null">
+				and price > #{price}
+			</if>
+			<if test="categoryId != null">
+				and category_id = #{categoryId}
+			</if>
+		</trim>
+		<if test="orderField != null">
+			order by ${orderField} ${orderDir}
+		</if>
+		<if test="size != null">
+			limit #{size} offset #{offset}
+		</if>
+	</select>
+
+	<select id="findViewAll" resultMap="menuViewResultMap">
+		select *
+		from menu_view
+		<trim prefix="where" prefixOverrides="AND | OR">
+			<if test="query !=null">
+				name like '%${query}%'
+			</if>
+			<if test="price != null">
+				and price > #{price}
+			</if>
+			<if test="categoryId != null">
+				and category_id = #{categoryId}
+			</if>
+		</trim>
+		<if test="orderField != null">
+			order by ${orderField} ${orderDir}
+		</if>
+		<if test="size != null">
+			limit #{size} offset #{offset}
+		</if>
+	</select>
+
+	<select id="findById" resultMap="menuResultMap">
+		select *
+		from menu
+		where id =
+		#{id}
+	</select>
+
+	<select id="findByIds" resultMap="menuResultMap">
+		select *
+		from menu
+		<where>
+			<foreach item="id" collection="collection" open="id in ("
+				separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<select id="count" resultType="Integer">
+		select
+		count(id) count
+		from
+		menu
+		<trim prefix="where" prefixOverrides="AND | OR">
+			<if test="query !=null">
+				name like '%${query}%'
+			</if>
+			<if test="price != null">
+				and price > #{price}
+			</if>
+			<if test="categoryId != null">
+				and category_id = #{categoryId}
+			</if>
+		</trim>
+	</select>
+
+	<!-- Menu 객체로 보낼 거면 파라메터타입을 넣어줘야 한다. -->
+	<insert id="insert" parameterType="Menu">
+		insert into menu
+		(name,price,img,category_id, reg_member_id)
+		values(#{name},#{price},#{img},#{categoryId},#{regMemberId})
+	</insert>
+
+	<update id="update" parameterType="Menu">
+		update menu
+		<trim prefix="set" suffixOverrides=",">
+			<if test="name != null">
+				name = '${name}',
+			</if>
+			<if test="price !=null">
+				price = #{price},
+			</if>
+			<if test="img != null">
+				img = #{img}
+			</if>
+		</trim>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from
+		menu
+		where
+		id= #{id}
+	</delete>
+
+</mapper>

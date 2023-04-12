@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<typeInfoHistroy>
+    <typeInfo handle="=bootprj/C:\/Users\/BW3\/.m2\/repository\/ognl\/ognl\/3.3.4\/ognl-3.3.4.jar=/maven.pomderived=/true=/=/maven.groupId=/ognl=/=/maven.artifactId=/ognl=/=/maven.version=/3.3.4=/=/maven.scope=/compile=/=/maven.pomderived=/true=/&lt;ognl(MemberAccess.class[MemberAccess" modifiers="1537" timestamp="1678958244562"/>
+    <typeInfo handle="=bootprj/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;kr.co.rland.web.service{MemberService.java[MemberService" modifiers="513" timestamp="1681192709358"/>
+    <typeInfo handle="=bootprj/C:\/Users\/BW3\/.m2\/repository\/org\/apache\/tomcat\/embed\/tomcat-embed-core\/10.1.5\/tomcat-embed-core-10.1.5.jar=/maven.pomderived=/true=/=/maven.groupId=/org.apache.tomcat.embed=/=/maven.artifactId=/tomcat-embed-core=/=/maven.version=/10.1.5=/=/maven.scope=/compile=/=/maven.pomderived=/true=/&lt;jakarta.servlet(Filter.class[Filter" modifiers="1537" timestamp="1677131616380"/>
+</typeInfoHistroy>
