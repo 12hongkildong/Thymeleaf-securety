@@ -1,0 +1,43 @@
+package kr.co.rland.web.config;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import kr.co.rland.web.entity.Member;
+import kr.co.rland.web.repository.MemberRepository;
+
+@Service
+public class RlandUserDetailService implements UserDetailsService{
+
+	@Autowired
+	private MemberRepository repository;
+	
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		//RlandUserDetails 그릇에 당믈 데이터 준비 완료
+		Member member = repository.findByUserName(username);
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+		
+		
+		// 데이터가 준비 됐으면 이제 알랜드유저디테일즈 그릇 객체를 만들어 데이터를 담아 반환해주면 끝!
+		RlandUserDetails user = new RlandUserDetails();
+		user.setId(member.getId());
+		user.setUsername(member.getUserName());
+		user.setPassword(member.getPwd());
+		user.setEmail(member.getEmail());
+		user.setAuthorities(member.get);
+		
+		return user;
+	}
+
+}

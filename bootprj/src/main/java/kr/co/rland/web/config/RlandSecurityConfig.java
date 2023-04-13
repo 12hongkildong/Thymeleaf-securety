@@ -1,5 +1,8 @@
 package kr.co.rland.web.config;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.tags.form.PasswordInputTag;
 
@@ -20,6 +24,10 @@ import kr.co.rland.web.entity.Member;
 @Configuration
 public class RlandSecurityConfig {
 	
+	@Autowired
+	private DataSource dataSource;
+	
+	//1. 인메모리 서비스
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		
@@ -53,9 +61,28 @@ public class RlandSecurityConfig {
 	
 	//사용자 데이터 서비스
 	// 1. 인메모리 서비스
+	
+	// 3. 커스텀 유저 서비스
+	//@Bean
+	public UserDetailsService rlandUserDetailsService() {
+	
+		return new RlandUserDetailService();
+	}
+	
+	
 	// 2. JDBC 서비스
+	//@Bean -> 이걸 bean대신우리가 만든 서비스로 적어야 된다고 한다?
+	public UserDetailsService jdbcUserDetailsService() {
+		
+		JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
+		manager.setUsersByUsernameQuery("select username, pwd password, 1 enabled from member where username=?"); // username, password, enabled
+		manager.setAuthoritiesByUsernameQuery("select username, 'ROLE_ADMIN' authority from member where username=?");
+		
+		return manager;
+	}
+	
 	// 3. LDAP 도메인 서비스
-	@Bean
+	//@Bean
 	public UserDetailsService userDetailsService() {
 		UserDetails newlec = User
 								.builder()

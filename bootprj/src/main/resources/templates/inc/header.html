@@ -12,6 +12,8 @@
 		</h1>
 
 		<ul class="main-menu d-none d-inline-flex-sm">
+			<li sec:authorize="isAuthenticated()"><span sec:authentication="principal.email"></span></li>
+<!-- 			<li><span sec:authentication="principal.email"></span></li> -->
 			<li><a class="" href="/menu/list.html">카페메뉴</a></li>
 			<li><a class="" href="/notice/list.html">공지사항</a></li>
 			<li sec:authorize="isAnonymous()"><a class="" href="/user/login">로그인</a></li>

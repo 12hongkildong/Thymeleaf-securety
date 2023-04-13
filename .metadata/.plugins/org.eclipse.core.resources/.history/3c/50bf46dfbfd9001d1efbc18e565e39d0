@@ -1,0 +1,81 @@
+package kr.co.rland.web.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.tags.form.PasswordInputTag;
+
+import kr.co.rland.web.entity.Member;
+
+
+//https://docs.spring.io/spring-security/reference/servlet/authorization/expression-based.html
+//https://www.baeldung.com/spring-security-thymeleaf 스프링보안관련
+@Configuration
+public class RlandSecurityConfig {
+	
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		
+		http
+			.cors()
+			.and()
+				.csrf().disable()
+				.authorizeHttpRequests()   //권한을 요청하는데
+					.requestMatchers("/admin/**").hasAnyRole("ADMIN")  // 요청에 대한 꼬리를 단다. url패턴을 누구에게만 허락할 것인지에 대한
+					.requestMatchers("/member/**").hasAnyRole("ADMIN","MEMBER")
+					.anyRequest().permitAll()
+			.and()
+				.formLogin()
+				.loginPage("/user/login")
+				.loginProcessingUrl("/user/login")
+				.defaultSuccessUrl("/admin/index")
+			.and()
+				.logout()
+					.logoutUrl("/user/logoutSDFASDFASDF")
+					.logoutSuccessUrl("/index");
+		
+		return http.build();
+	}
+	
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		
+		return new BCryptPasswordEncoder();
+	}
+	
+	
+	//사용자 데이터 서비스
+	// 1. 인메모리 서비스
+	// 2. JDBC 서비스
+	// 3. LDAP 도메인 서비스
+	@Bean
+	public UserDetailsService userDetailsService() {
+		UserDetails newlec = User
+								.builder()
+								.username("newlec")
+								.password(passwordEncoder().encode("111"))
+								.roles("ADMIN", "MEMBER")
+								.build();
+
+		UserDetails dragon = User
+								.builder()
+								.username("dragon")
+								.password("111")
+								.roles("MEMBER")
+								.build();
+		
+		//User user = new User("id", "pwd", null);
+//		Member member = Member.builder()
+//							.id(1L)
+//							.email("111")
+//							.build();
+		return new InMemoryUserDetailsManager(newlec, dragon);
+	}
+}

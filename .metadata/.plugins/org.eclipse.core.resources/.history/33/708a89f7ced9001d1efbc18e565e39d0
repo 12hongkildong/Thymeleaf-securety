@@ -1,0 +1,20 @@
+package kr.co.rland.web.config;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+@Service
+public class RlandUserDetailService implements UserDetailsService{
+
+	@Autowired
+	privaet MenberRepository repository
+	
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
